@@ -13,6 +13,7 @@ import {
   Feedback,
 } from '@icedesign/base';
 import CallApi from '../../util/Api';
+import CommonInfo from '../../util/CommonInfo';
 
 const { Row, Col } = Grid;
 
@@ -34,6 +35,7 @@ export default class ShopAddForm extends Component {
         tel: '',
         des: '',
       },
+      userInfo: JSON.parse(CommonInfo.getODUserInfo()) || {},
     };
   }
 
@@ -55,6 +57,7 @@ export default class ShopAddForm extends Component {
   }
 
   submit = () => {
+    const userInfo = this.state.userInfo;
     this.formRef.validateAll((error, value) => {
       console.log('error', error, 'value', value);
       if (error) {
@@ -65,7 +68,12 @@ export default class ShopAddForm extends Component {
           Feedback.toast.error(res.msg);
         } else {
           Feedback.toast.success('创建成功');
-          hashHistory.push('/shop/list');
+          // 商户
+          if (userInfo.type === 2) {
+            hashHistory.push('/');
+          } else {
+            hashHistory.push('/shop/list');
+          }
         }
       }).catch((err) => {
         Feedback.toast.error(err);

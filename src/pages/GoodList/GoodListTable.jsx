@@ -38,7 +38,7 @@ export default class GoodListTable extends Component {
   fetchData = () => {
     const filterFormValue = this.state.filterFormValue;
     console.log('filterFormValue======', filterFormValue);
-    CallApi('/od/good/queryPageList', filterFormValue, 'GET', true).then((res) => {
+    CallApi('/od/good/queryPageList', filterFormValue, 'POST', true).then((res) => {
       if (res.result === 'fail') {
         Feedback.toast.error(res.msg);
       } else {

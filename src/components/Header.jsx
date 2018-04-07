@@ -42,6 +42,7 @@ export default class Header extends PureComponent {
       } else {
         CommonInfo.removeToken();
         CommonInfo.removeODUserInfo();
+        CommonInfo.removeODCartSum();
       }
     }).catch((err) => {
       Feedback.toast.error(err);
@@ -50,7 +51,8 @@ export default class Header extends PureComponent {
 
   render() {
     const { width, theme, isMobile, className, style, ...others } = this.props;
-    console.log('userInof====', this.state.userInfo)
+    console.log('userInfo====', this.state.userInfo)
+    const userInfo = this.state.userInfo;
     return (
       <Layout.Header
         {...others}
@@ -64,7 +66,7 @@ export default class Header extends PureComponent {
           style={{ display: 'flex' }}
         >
           {/* Header 菜单项 begin */}
-          {headerNavs && headerNavs.length > 0 ? (
+          {userInfo.type === 3 && headerNavs && headerNavs.length > 0 ? (
             <Menu mode="horizontal" selectedKeys={[]}>
               {headerNavs.map((nav, idx) => {
                 const linkProps = {};

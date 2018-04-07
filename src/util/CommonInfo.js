@@ -86,6 +86,20 @@ CommonInfo.removeODCartSum = function () {
   sessionStorageWrap.removeItem('ODCartSum');
 };
 
+/**
+ * 存储店铺信息
+ */
+CommonInfo.saveODShopInfo = function (flag) {
+  sessionStorageWrap.setItem('ODShopInfo', flag);
+};
+
+CommonInfo.getODShopInfo = function () {
+  return sessionStorageWrap.getItem('ODShopInfo');
+};
+
+CommonInfo.removeODShopInfo = function () {
+  sessionStorageWrap.removeItem('ODShopInfo');
+};
 
 CommonInfo.sessionStorage = sessionStorageWrap;
 

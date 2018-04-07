@@ -1,8 +1,10 @@
 /* eslint react/jsx-no-target-blank: 0 */
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Balloon, Grid } from '@icedesign/base';
+import { Balloon, Grid, Feedback } from '@icedesign/base';
 import './DisplayCard.scss';
+import CommonInfo from '../../../../util/CommonInfo';
+import CallApi from '../../../../util/Api';
 
 const { Row, Col } = Grid;
 
@@ -15,31 +17,39 @@ export default class extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      countAllBo: {},
+      userInfo: JSON.parse(CommonInfo.getODUserInfo()) || {},
+    };
+  }
+
+  componentDidMount = () => {
+    const userInfo = this.state.userInfo;
+    if (userInfo.type === 1) {
+      CallApi('/od/count/countAll', null, 'GET', true).then((res) => {
+        if (res.result === 'fail') {
+          Feedback.toast.error(res.msg);
+        } else {
+          this.setState({
+            countAllBo: res,
+          });
+          console.log('res===', res);
+        }
+      }).catch((err) => {
+        Feedback.toast.error(err);
+      });
+    }
   }
 
   render() {
-    const down = (
-      <img
-        src="https://gw.alicdn.com/tfs/TB1ReMsh3vD8KJjy0FlXXagBFXa-12-18.png"
-        style={styles.down}
-        alt=""
-      />
-    );
-    const up = (
-      <img
-        src="https://gw.alicdn.com/tfs/TB1Q1Msh3vD8KJjy0FlXXagBFXa-12-18.png"
-        style={styles.up}
-        alt=""
-      />
-    );
+    const { countAllBo } = this.state;
 
     return (
       <IceContainer className="display-card-container" style={styles.container}>
         <Row wrap>
           <Col xxs="24" s="12" l="6" style={styles.item}>
             <div style={styles.title} className="title">
-              昨日内容浏览次数
+              总用户数
               <span style={styles.extraIcon}>
                 <Balloon
                   trigger={
@@ -53,21 +63,17 @@ export default class extends Component {
                   triggerType="hover"
                   closable={false}
                 >
-                  这里是数据说明
+                  总用户数
                 </Balloon>
               </span>
             </div>
             <div className="count" style={styles.count}>
-              46,657
-            </div>
-            <div style={styles.desc} className="desc">
-              <span>较前日 {down} -200</span>
-              <span style={{ marginLeft: 5 }}>近7天 {up} +100</span>
+              {countAllBo.countUser}
             </div>
           </Col>
           <Col xxs="24" s="12" l="6" style={styles.item}>
             <div style={styles.title} className="title">
-              昨日账号主页浏览人数
+              总店铺数
               <span style={styles.extraIcon}>
                 <Balloon
                   trigger={
@@ -81,21 +87,17 @@ export default class extends Component {
                   triggerType="hover"
                   closable={false}
                 >
-                  这里是数据说明
+                  总店铺数
                 </Balloon>
               </span>
             </div>
             <div style={styles.count} className="count">
-              533
-            </div>
-            <div style={styles.desc} className="desc">
-              <span>较前日 {down} -200</span>
-              <span style={{ marginLeft: 5 }}>近7天 {up} +100</span>
+              {countAllBo.countShop}
             </div>
           </Col>
           <Col xxs="24" s="12" l="6" style={styles.item}>
             <div style={styles.title} className="title">
-              昨日活跃粉丝数
+              总订单数
               <span style={styles.extraIcon}>
                 <Balloon
                   trigger={
@@ -109,21 +111,17 @@ export default class extends Component {
                   triggerType="hover"
                   closable={false}
                 >
-                  这里是数据说明
+                  总订单数
                 </Balloon>
               </span>
             </div>
             <div style={styles.count} className="count">
-              2233
-            </div>
-            <div style={styles.desc} className="desc">
-              <span>较前日 {down} -200</span>
-              <span style={{ marginLeft: 5 }}>近7天 {up} +100</span>
+              {countAllBo.countTrade}
             </div>
           </Col>
           <Col xxs="24" s="12" l="6" style={styles.item}>
             <div style={styles.title} className="title">
-              昨日粉丝数
+              总菜品数
               <span style={styles.extraIcon}>
                 <Balloon
                   trigger={
@@ -137,16 +135,12 @@ export default class extends Component {
                   triggerType="hover"
                   closable={false}
                 >
-                  这里是数据说明
+                  总菜品数
                 </Balloon>
               </span>
             </div>
             <div style={styles.count} className="count">
-              23,333
-            </div>
-            <div style={styles.desc} className="desc">
-              <span>较前日 {down} -200</span>
-              <span style={{ marginLeft: 5 }}>近7天 {up} +100</span>
+              {countAllBo.countGood}
             </div>
           </Col>
         </Row>

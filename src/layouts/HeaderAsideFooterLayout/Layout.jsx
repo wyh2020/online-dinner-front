@@ -10,9 +10,9 @@ import { enquire } from 'enquire-js';
 import Header from './../../components/Header';
 import Footer from './../../components/Footer';
 import Logo from './../../components/Logo';
-import { asideNavs } from './../../navs';
 import './scss/light.scss';
 import './scss/dark.scss';
+import CommonInfo from '../../util/CommonInfo';
 
 // 设置默认的皮肤配置，支持 dark 和 light 两套皮肤配置
 const theme = typeof THEME === 'undefined' ? 'dark' : THEME;
@@ -26,11 +26,203 @@ export default class HeaderAsideFooterResponsiveLayout extends Component {
     this.state = {
       openDrawer: false,
       isScreen: undefined,
+      userInfo: JSON.parse(CommonInfo.getODUserInfo()) || {},
+      customAsideNavs: [],
     };
   }
 
   componentDidMount() {
     this.enquireScreenRegister();
+    this.toGetNavs();
+  }
+
+  toGetNavs = () => {
+    const userInfo = this.state.userInfo;
+    let customAsideNavs = [
+      {
+        text: 'Dashboard',
+        to: '/',
+        icon: 'home2',
+      },
+      {
+        text: '店铺管理',
+        to: '/shop/list',
+        icon: 'shop',
+        children: [
+          {
+            text: '店铺列表',
+            to: '/shop/list',
+          },
+          {
+            text: '新增店铺',
+            to: '/shop/add',
+          },
+        ],
+      },
+      {
+        text: '用户管理',
+        to: '/user/list',
+        icon: 'person',
+        children: [
+          {
+            text: '用户列表',
+            to: '/user/list',
+          },
+          {
+            text: '新增用户',
+            to: '/user/add',
+          },
+        ],
+      },
+      {
+        text: '菜品管理',
+        to: '/good/list',
+        icon: 'directory',
+        children: [
+          {
+            text: '菜品列表',
+            to: '/good/list',
+          },
+          {
+            text: '新增菜品',
+            to: '/good/add',
+          },
+        ],
+      },
+      {
+        text: '订单管理',
+        to: '/trade/list',
+        icon: 'cascades',
+        children: [
+          {
+            text: '订单列表',
+            to: '/trade/list',
+          },
+        ],
+      },
+    ];
+    // 管理员
+    if (userInfo.type === 1) {
+      customAsideNavs = [
+        {
+          text: 'Dashboard',
+          to: '/',
+          icon: 'home2',
+        },
+        {
+          text: '店铺管理',
+          to: '/shop/list',
+          icon: 'shop',
+          children: [
+            {
+              text: '店铺列表',
+              to: '/shop/list',
+            },
+            {
+              text: '新增店铺',
+              to: '/shop/add',
+            },
+          ],
+        },
+        {
+          text: '用户管理',
+          to: '/user/list',
+          icon: 'person',
+          children: [
+            {
+              text: '用户列表',
+              to: '/user/list',
+            },
+            {
+              text: '新增用户',
+              to: '/user/add',
+            },
+          ],
+        },
+        {
+          text: '菜品管理',
+          to: '/good/list',
+          icon: 'directory',
+          children: [
+            {
+              text: '菜品列表',
+              to: '/good/list',
+            },
+            {
+              text: '新增菜品',
+              to: '/good/add',
+            },
+          ],
+        },
+        {
+          text: '订单管理',
+          to: '/trade/list',
+          icon: 'cascades',
+          children: [
+            {
+              text: '订单列表',
+              to: '/trade/list',
+            },
+          ],
+        },
+      ];
+    } else if (userInfo.type === 2) {
+      customAsideNavs = [
+        {
+          text: 'Dashboard',
+          to: '/',
+          icon: 'home2',
+        },
+        {
+          text: '菜品管理',
+          to: '/good/list',
+          icon: 'directory',
+          children: [
+            {
+              text: '菜品列表',
+              to: '/good/list',
+            },
+            {
+              text: '新增菜品',
+              to: '/good/add',
+            },
+          ],
+        },
+        {
+          text: '订单管理',
+          to: '/trade/list',
+          icon: 'cascades',
+          children: [
+            {
+              text: '订单列表',
+              to: '/trade/list',
+            },
+          ],
+        },
+      ];
+    } else if (userInfo.type === 3) {
+      customAsideNavs = [
+        {
+          text: 'Dashboard',
+          to: '/',
+          icon: 'home2',
+        },
+        {
+          text: '我的订单',
+          to: '/trade/list',
+          icon: 'cascades',
+          children: [
+            {
+              text: '订单列表',
+              to: '/trade/list',
+            },
+          ],
+        },
+      ];
+    }
+    this.setState({
+      customAsideNavs,
+    });
   }
 
   /**
@@ -95,20 +287,22 @@ export default class HeaderAsideFooterResponsiveLayout extends Component {
     const { routes } = this.props;
     const matched = routes[0].path;
     let openKeys = '';
+    const customAsideNavs = this.state.customAsideNavs;
 
-    asideNavs &&
-      asideNavs.length > 0 &&
-      asideNavs.map((item, index) => {
-        if (item.to === matched) {
-          openKeys = index;
-        }
-      });
+    customAsideNavs &&
+    customAsideNavs.length > 0 &&
+    customAsideNavs.map((item, index) => {
+      if (item.to === matched) {
+        openKeys = index;
+      }
+    });
 
     return openKeys;
   };
 
   render() {
     const { location: { pathname } } = this.props;
+    const { customAsideNavs } = this.state;
 
     return (
       <Layout
@@ -145,9 +339,9 @@ export default class HeaderAsideFooterResponsiveLayout extends Component {
               defaultOpenKeys={[`${this.getOpenKeys()}`]}
               mode="inline"
             >
-              {asideNavs &&
-                asideNavs.length > 0 &&
-                asideNavs.map((nav, index) => {
+              {customAsideNavs &&
+              customAsideNavs.length > 0 &&
+              customAsideNavs.map((nav, index) => {
                   if (nav.children && nav.children.length > 0) {
                     return (
                       <SubMenu

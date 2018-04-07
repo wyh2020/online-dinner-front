@@ -61,13 +61,43 @@ export default class UserLogin extends Component {
           CommonInfo.saveToken(res.token);
           CommonInfo.saveODUserInfo(JSON.stringify(res.user));
           Feedback.toast.success('登录成功');
-          hashHistory.push('/');
+          // 商户
+          if (res.user.type === 2) {
+            console.log('res.user.type=====', res.user.type);
+            this.queryShopInfo();
+          } else {
+            hashHistory.push('/');
+          }
         }
       }).catch((err) => {
         Feedback.toast.error(err);
       });
     });
   };
+
+  queryShopInfo = () => {
+    const userInfo = JSON.parse(CommonInfo.getODUserInfo()) || {};
+    const usercode = userInfo.usercode;
+    console.log('usercode======', usercode)
+    CallApi('/od/shop/queryByUserCode', { userCode: usercode }, 'GET', true).then((res) => {
+      if (res.result === 'fail') {
+        Feedback.toast.error(res.msg);
+        hashHistory.push('/shop/add');
+      } else {
+        console.log('res===', res);
+        CommonInfo.saveODShopInfo(res || {});
+        if (!res.shopcode) {
+          // 如果没有店铺 去新增店铺
+          hashHistory.push('/shop/add');
+        } else {
+          hashHistory.push('/');
+        }
+      }
+    }).catch((err) => {
+      Feedback.toast.error(err);
+      hashHistory.push('/shop/add');
+    });
+  }
 
   render() {
     return (
