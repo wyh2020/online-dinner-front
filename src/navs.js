@@ -126,10 +126,6 @@ if (userInfo.type === 1) {
           text: '菜品列表',
           to: '/good/list',
         },
-        {
-          text: '新增菜品',
-          to: '/good/add',
-        },
       ],
     },
     {

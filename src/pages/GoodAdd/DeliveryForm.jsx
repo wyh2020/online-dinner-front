@@ -67,11 +67,12 @@ export default class DeliveryForm extends Component {
                     Constant.goodImgs.map((imgUrl, index) => {
                       return (
                         <Radio value={index} key={index}>
-                          <Img key={index}
+                          <img key={index}
                             width={80}
                             height={80}
                             src={imgUrl}
                             type="cover"
+                            alt="菜品图片"
                             style={{ border: '1px solid #ccc', margin: '10px', verticalAlign: 'middle' }}
                           />
                         </Radio>
