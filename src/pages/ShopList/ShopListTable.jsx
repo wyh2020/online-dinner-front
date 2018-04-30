@@ -6,6 +6,7 @@ import SearchBar from './components/SearchBar';
 import EditShop from './components/EditShop';
 import DetailShop from './components/DetailShop';
 import CallApi from '../../util/Api';
+import DeleteBalloon from './components/DeleteBalloon';
 
 export default class ShopListTable extends Component {
   static displayName = 'ShopListTable';
@@ -37,6 +38,7 @@ export default class ShopListTable extends Component {
 
   fetchData = () => {
     const filterFormValue = this.state.filterFormValue;
+    filterFormValue.state = 1;
     console.log('filterFormValue======', filterFormValue);
     CallApi('/od/shop/queryPageList', filterFormValue, 'GET', true).then((res) => {
       if (res.result === 'fail') {
@@ -111,9 +113,30 @@ export default class ShopListTable extends Component {
         >
           详情
         </a>
+        <DeleteBalloon
+          handleRemove={() => { console.log('111111111111111111'); this.updateShop(record, 9); }}
+        />
       </div>
     );
   };
+
+  /**
+   * 更新店铺状态
+   * @param shop
+   */
+  updateShop = (shop, shopState) => {
+    console.log(122222222222);
+    CallApi('/od/user/update', { shopcode: shop.shopcode, state: shopState }, 'POST', true).then((res) => {
+      if (res.result === 'fail') {
+        Feedback.toast.error(res.msg);
+      } else {
+        Feedback.toast.success('删除成功!');
+        this.fetchData();
+      }
+    }).catch((err) => {
+      Feedback.toast.error(err);
+    });
+  }
 
   changePage = (currentPage) => {
     this.queryCache.page = currentPage;
@@ -205,7 +228,7 @@ export default class ShopListTable extends Component {
             <Table.Column
               title="操作"
               dataIndex="operation"
-              width={150}
+              width={200}
               lock="right"
               cell={this.renderOperations}
             />

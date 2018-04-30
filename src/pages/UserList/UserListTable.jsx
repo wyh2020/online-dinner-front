@@ -6,6 +6,7 @@ import SearchBar from './components/SearchBar';
 import EditUser from './components/EditUser';
 import DetailUser from './components/DetailUser';
 import CallApi from '../../util/Api';
+import DeleteBalloon from './components/DeleteBalloon';
 
 export default class UserListTable extends Component {
   static displayName = 'UserListTable';
@@ -38,6 +39,7 @@ export default class UserListTable extends Component {
   fetchData = () => {
     const filterFormValue = this.state.filterFormValue;
     console.log('filterFormValue======', filterFormValue);
+    filterFormValue.state = 1;
     CallApi('/od/user/queryPageList', filterFormValue, 'GET', true).then((res) => {
       if (res.result === 'fail') {
         Feedback.toast.error(res.msg);
@@ -77,7 +79,9 @@ export default class UserListTable extends Component {
   renderType = (value, index, record) => {
     const type = record.type;
     let typeStr = '未设置';
-    if (type === 2) {
+    if (type === 1) {
+      typeStr = '管理员';
+    } else if (type === 2) {
       typeStr = '商户';
     } else if (type === 3) {
       typeStr = '普通客户';
@@ -153,9 +157,30 @@ export default class UserListTable extends Component {
         >
           详情
         </a>
+        <DeleteBalloon
+          handleRemove={() => { console.log('111111111111111111'); this.updateUser(record, 9); }}
+        />
       </div>
     );
   };
+
+  /**
+   * 更新用户状态
+   * @param user
+   */
+  updateUser = (user, userState) => {
+    console.log(122222222222);
+    CallApi('/od/user/update', { usercode: user.usercode, state: userState }, 'POST', true).then((res) => {
+      if (res.result === 'fail') {
+        Feedback.toast.error(res.msg);
+      } else {
+        Feedback.toast.success('删除成功!');
+        this.fetchData();
+      }
+    }).catch((err) => {
+      Feedback.toast.error(err);
+    });
+  }
 
   changePage = (currentPage) => {
     this.queryCache.page = currentPage;
@@ -240,11 +265,6 @@ export default class UserListTable extends Component {
               width={200}
             />
             <Table.Column
-              title="状态"
-              cell={this.renderState}
-              width={200}
-            />
-            <Table.Column
               title="创建时间"
               dataIndex="createtime"
               cell={this.renderCreatetime}
@@ -253,7 +273,7 @@ export default class UserListTable extends Component {
             <Table.Column
               title="操作"
               dataIndex="operation"
-              width={150}
+              width={200}
               lock="right"
               cell={this.renderOperations}
             />

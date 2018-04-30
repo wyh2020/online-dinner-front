@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Dialog } from '@icedesign/base';
+import { Dialog, Feedback } from '@icedesign/base';
 import IceContainer from '@icedesign/container';
+import CallApi from '../../../util/Api';
 
 export default class DetailGood extends Component {
   static displayName = 'DetailGood';
@@ -11,7 +12,23 @@ export default class DetailGood extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      goodTypes: [],
+    };
+  }
+
+  componentDidMount = () => {
+    CallApi('/od/class/queryPageList', {}, 'GET', true).then((res) => {
+      if (res.result === 'fail') {
+        // Feedback.toast.error(res.msg);
+      } else {
+        this.setState({
+          goodTypes: res.dataList,
+        });
+      }
+    }).catch((err) => {
+      Feedback.toast.error(err);
+    });
   }
 
   formatDate = (date) => {
@@ -27,25 +44,13 @@ export default class DetailGood extends Component {
   };
 
   renderType = (record) => {
-    const type = record.type;
+    const goodTypes = this.state.goodTypes;
     let typeStr;
-    if (type === 1) {
-      typeStr = '鲁菜';
-    } else if (type === 2) {
-      typeStr = '川菜';
-    } else if (type === 3) {
-      typeStr = '粤菜';
-    } else if (type === 4) {
-      typeStr = '闽菜';
-    } else if (type === 5) {
-      typeStr = '苏菜';
-    } else if (type === 6) {
-      typeStr = '浙菜';
-    } else if (type === 7) {
-      typeStr = '湘菜';
-    } else if (type === 8) {
-      typeStr = '徽菜';
-    }
+    goodTypes.map((obj) => {
+      if (obj.id === record.type) {
+        typeStr = obj.name;
+      }
+    });
     return (
       <div style={styles.titleWrapper}>
         <span style={styles.title}>{typeStr}</span>

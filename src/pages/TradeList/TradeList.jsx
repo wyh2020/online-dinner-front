@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Table, Feedback, Grid, Button } from '@icedesign/base';
 import IceContainer from '@icedesign/container';
 import CallApi from '../../util/Api';
-import Constant from '../../util/Constant';
 import CommonInfo from '../../util/CommonInfo';
 import SingleItem from './components/SingleItem';
 import EditDialog from './components/EditDialog';
@@ -21,6 +20,7 @@ export default class TradeList extends Component {
     super(props);
     this.state = {
       userInfo: JSON.parse(CommonInfo.getODUserInfo()) || {},
+      shopInfo: JSON.parse(CommonInfo.getODShopInfo()) || {},
       tableData: [],
       selectedRowKeys: [],
       records: [],
@@ -31,12 +31,25 @@ export default class TradeList extends Component {
     this.getTableData();
   }
 
+  formatDate = (date) => {
+    const pad = n => (n < 10 ? `0${n}` : n);
+    const dateStr = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    return `${dateStr}`;
+  }
+
   /**
    * 异步获取数据
    */
   getTableData = () => {
-    const userCode = this.state.userInfo.usercode;
-    CallApi('/od/trade/queryPageList', { usercode: userCode }, 'GET', true).then((res) => {
+    const type = this.state.userInfo.type;
+    let userCode = '';
+    let shopCode = '';
+    if (type === 2) { // 店铺
+      shopCode = this.state.shopInfo.shopcode;
+    } else if (type === 3) { // 客户
+      userCode = this.state.userInfo.usercode;
+    }
+    CallApi('/od/trade/queryPageList', { usercode: userCode, shopcode: shopCode }, 'GET', true).then((res) => {
       if (res.result === 'fail') {
         Feedback.toast.error(res.msg);
       } else {
@@ -60,7 +73,7 @@ export default class TradeList extends Component {
         {goodList.map((item, key) => {
           return (
             <Col key={key} xxs="24" s="8" l="4">
-              <SingleItem key={key} {...item} />
+              <SingleItem key={key} {...{ item, record, index }} />
             </Col>
           );
         })}
@@ -72,6 +85,7 @@ export default class TradeList extends Component {
    * 渲染订单价格
    */
   renderOrderPrice = (value, index, record) => {
+    console.log('record=========', record);
     return <b>{`¥ ${record.price}`}</b>;
   };
 
@@ -104,7 +118,20 @@ export default class TradeList extends Component {
    * 渲染订单编号
    */
   renderTradeNo = (record) => {
-    return <div>{`订单编号：${record.tradeno}`}</div>;
+    console.log('record=====', record);
+    let shopname = '';
+    if (record.shopPo) {
+      shopname = record.shopPo.shopname;
+    }
+    return (
+      <div>
+        {`订单编号：${record.tradeno}`}
+        <br />
+        {`店铺名称：${shopname}`}
+        <br />
+        {`订单时间：${this.formatDate(new Date(record.createtime))}`}
+      </div>
+    );
   };
 
   /**
@@ -121,10 +148,11 @@ export default class TradeList extends Component {
    */
   renderOperation = (value, index, record) => {
     const that = this;
+    const type = this.state.userInfo.type;
     return (
       <div style={styles.titleWrapper}>
         {
-          record.state === 1 ?
+          type === 3 && record.state === 1 ?
             <Button size="small" type="primary" style={styles.mg10} onClick={this.toPay.bind(this, record)}>
               支付
             </Button> : null
@@ -142,7 +170,7 @@ export default class TradeList extends Component {
             /> : null
         }
         {
-          record.state === 2 && record.evaluateState === 1 ?
+          type === 3 && record.state === 2 && record.evaluateState === 1 ?
             <EditDialog
               index={index}
               record={record}

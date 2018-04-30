@@ -8,12 +8,14 @@ export default class SingleItem extends Component {
 
   render() {
     const {
-      name,
-      img,
-      price,
+      item,
+      record,
+      index,
     } = this.props;
-
-    const imgUrl = Constant.goodImgs[img || 0];
+    console.log('porps====', this.props)
+    const sums = record.sums.split(',');
+    const sum = sums[index];
+    const imgUrl = Constant.goodImgs[item.img || 0];
     return (
       <div
         className="single-item"
@@ -26,7 +28,7 @@ export default class SingleItem extends Component {
           {name}
         </div>
         <div style={styles.orderName}>
-          {`¥${price}`}
+          {`¥${item.price} * ${sum}`}
         </div>
       </div>
     );
@@ -35,18 +37,22 @@ export default class SingleItem extends Component {
 
 const styles = {
   orderImg: {
+    textAlign: 'center',
     width: '60px',
     height: '60px',
     float: 'left',
     marginRight: '10px',
   },
   orderList: {
+    textAlign: 'center',
     height: '100px',
+    width: '100px',
     cursor: 'pointer',
     borderRadius: '4px',
   },
   orderName: {
     textOverflow: 'ellipsis',
+    textAlign: 'center',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     color: '#999',

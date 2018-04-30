@@ -19,11 +19,23 @@ export default class EditGood extends Component {
     this.state = {
       good: {},
       isMobile: false,
+      goodTypes: [],
     };
   }
 
   componentDidMount() {
     this.enquireScreenRegister();
+    CallApi('/od/class/queryPageList', {}, 'GET', true).then((res) => {
+      if (res.result === 'fail') {
+        // Feedback.toast.error(res.msg);
+      } else {
+        this.setState({
+          goodTypes: res.dataList,
+        });
+      }
+    }).catch((err) => {
+      Feedback.toast.error(err);
+    });
   }
 
   enquireScreenRegister = () => {
@@ -78,7 +90,7 @@ export default class EditGood extends Component {
     }
     const good = this.props.good;
     console.log('good=========', good);
-
+    const goodTypes = this.state.goodTypes;
     return (
       <Dialog
         className="simple-form-dialog"
@@ -147,14 +159,11 @@ export default class EditGood extends Component {
               <Col span={`${isMobile ? '18' : '20'}`}>
                 <IceFormBinder name="type" >
                   <RadioGroup>
-                    <Radio value={1}>鲁菜</Radio>
-                    <Radio value={2}>川菜</Radio>
-                    <Radio value={3}>粤菜</Radio>
-                    <Radio value={4}>闽菜</Radio>
-                    <Radio value={5}>苏菜</Radio>
-                    <Radio value={6}>浙菜</Radio>
-                    <Radio value={7}>湘菜</Radio>
-                    <Radio value={8}>徽菜</Radio>
+                    {
+                      goodTypes.map((typeObj, index) => {
+                        return (<Radio value={typeObj.id} key={index}>{typeObj.name}</Radio>);
+                      })
+                    }
                   </RadioGroup>
                 </IceFormBinder>
                 <IceFormError name="type" />

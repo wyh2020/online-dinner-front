@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import IceContainer from '@icedesign/container';
-import { Button, Grid, Feedback } from '@icedesign/base';
+import { Button, Grid } from '@icedesign/base';
+import Img from '@icedesign/img';
 import IceEllipsis from '@icedesign/ellipsis';
-import CallApi from '../../../../../../util/Api';
+import Constant from '../../../../../../util/Constant';
 
 const { Row, Col } = Grid;
 
@@ -16,32 +17,8 @@ export default class InfoDisplayTab extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      tabData: [],
-    };
+    this.state = {};
   }
-
-  componentDidMount() {
-    this.getData();
-  }
-
-  /**
-   * 异步获取数据
-   */
-  getData = () => {
-    CallApi('/od/shop/queryPageList', null, 'GET', true).then((res) => {
-      if (res.result === 'fail') {
-        Feedback.toast.error(res.msg);
-      } else {
-        console.log('res===', res);
-        this.setState({
-          tabData: res.dataList || [],
-        });
-      }
-    }).catch((err) => {
-      Feedback.toast.error(err);
-    });
-  };
 
   toSelectGood = (item) => {
     console.log('item======', item);
@@ -54,13 +31,29 @@ export default class InfoDisplayTab extends Component {
 
   renderContent = (data) => {
     return data.map((item, index) => {
+      const imgUrl = Constant.shopImgs[0];
       return (
         <Col xxs="24" s="12" l="8" key={index}>
           <div style={styles.columnCard}>
             <div style={styles.cardTitle}>{item.shopname}</div>
             <div style={styles.cardDescWrapper}>
+              <div>
+                <Img key={index}
+                  width={80}
+                  height={80}
+                  src={imgUrl}
+                  type="cover"
+                  style={{ border: '1px solid #ccc', margin: '10px', verticalAlign: 'middle' }}
+                />
+              </div>
               <div style={styles.cardDesc}>
-                <IceEllipsis lineLimit={6} text={item.des} />
+                <IceEllipsis lineLimit={2} text={item.des} />
+              </div>
+              <div>
+                <div style={styles.cardItem}>{`位置：${item.address}`}</div>
+              </div>
+              <div>
+                <div style={styles.cardItem}>{`电话：${item.tel}`}</div>
               </div>
             </div>
             <div style={styles.cardBtnWrapper}>
@@ -81,7 +74,7 @@ export default class InfoDisplayTab extends Component {
   };
 
   render() {
-    const { tabData } = this.state;
+    const tabData = this.props.tabData || [];
     return (
       <div className="info-display-tab">
         <IceContainer title="热门店铺">
@@ -100,11 +93,12 @@ const styles = {
     boxShadow:
       '0px 0px 2px 0px rgba(0, 0, 0, 0.1),0px 2px 2px 0px rgba(0, 0, 0, 0.1)',
     background: '#fff',
-    height: '280px',
+    height: '380px',
     marginBottom: '20px',
   },
   cardDescWrapper: {
     marginTop: '20px',
+    textAlign: 'center',
   },
   cardTitle: {
     fontSize: '18px',
@@ -113,12 +107,17 @@ const styles = {
   },
   cardDesc: {
     padding: '0 20px',
-    height: '144px',
+    height: '50px',
     overflow: 'hidden',
     lineHeight: '24px',
-    fontSize: '14px',
+    fontSize: '12px',
     color: '#666',
     margin: '5px auto 0 auto',
+  },
+  cardItem: {
+    fontSize: '14px',
+    textAlign: 'center',
+    marginTop: '10px',
   },
   cardBtnWrapper: {
     textAlign: 'center',

@@ -85,7 +85,7 @@ export default class UserLogin extends Component {
         hashHistory.push('/shop/add');
       } else {
         console.log('res===', res);
-        CommonInfo.saveODShopInfo(res || {});
+        CommonInfo.saveODShopInfo(JSON.stringify(res) || {});
         if (!res.shopcode) {
           // 如果没有店铺 去新增店铺
           hashHistory.push('/shop/add');

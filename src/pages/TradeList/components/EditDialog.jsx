@@ -98,7 +98,7 @@ export default class EditDialog extends Component {
           closable="esc,mask,close"
           onCancel={this.onClose}
           onClose={this.onClose}
-          title="编辑"
+          title="评价"
         >
           <Form direction="ver" field={this.field}>
             <FormItem label="分数：" {...formItemLayout}>

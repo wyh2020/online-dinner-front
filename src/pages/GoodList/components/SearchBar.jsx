@@ -26,7 +26,7 @@ export default class SearchBar extends Component {
                 <Input name="name" />
               </IceFormBinder>
             </Col>
-            <Col xxs={24} xs={12} l={8} style={styles.filterCol}>
+            {/*<Col xxs={24} xs={12} l={8} style={styles.filterCol}>
               <label style={styles.filterTitle}>菜系</label>
               <IceFormBinder>
                 <Select name="type" placeholder="请选择">
@@ -40,7 +40,7 @@ export default class SearchBar extends Component {
                   <Select.Option value={8}>徽菜</Select.Option>
                 </Select>
               </IceFormBinder>
-            </Col>
+            </Col>*/}
             <Col xxs={24} xs={12} l={8} style={styles.filterCol}>
               <label style={styles.filterTitle}>创建时间</label>
               <IceFormBinder

@@ -4,7 +4,8 @@ import {
   FormBinder as IceFormBinder,
   FormError as IceFormError,
 } from '@icedesign/form-binder';
-import { Input, Button, Radio, Grid } from '@icedesign/base';
+import { Input, Button, Radio, Grid, Feedback } from '@icedesign/base';
+import CallApi from '../../util/Api';
 
 const { Row, Col } = Grid;
 const { Group: RadioGroup } = Radio;
@@ -25,7 +26,22 @@ export default class ItemForm extends Component {
         type: '',
         img: '',
       },
+      goodTypes: [],
     };
+  }
+
+  componentDidMount = () => {
+    CallApi('/od/class/queryPageList', {}, 'GET', true).then((res) => {
+      if (res.result === 'fail') {
+        // Feedback.toast.error(res.msg);
+      } else {
+        this.setState({
+          goodTypes: res.dataList,
+        });
+      }
+    }).catch((err) => {
+      Feedback.toast.error(err);
+    });
   }
 
   onFormChange = (value) => {
@@ -44,6 +60,7 @@ export default class ItemForm extends Component {
   };
 
   render() {
+    const goodTypes = this.state.goodTypes;
     return (
       <IceFormBinderWrapper
         ref={(formRef) => {
@@ -92,14 +109,11 @@ export default class ItemForm extends Component {
             <Col s="12" l="18">
               <IceFormBinder name="type">
                 <RadioGroup>
-                  <Radio value={1}>鲁菜</Radio>
-                  <Radio value={2}>川菜</Radio>
-                  <Radio value={3}>粤菜</Radio>
-                  <Radio value={4}>闽菜</Radio>
-                  <Radio value={5}>苏菜</Radio>
-                  <Radio value={6}>浙菜</Radio>
-                  <Radio value={7}>湘菜</Radio>
-                  <Radio value={8}>徽菜</Radio>
+                  {
+                    goodTypes.map((typeObj, index) => {
+                      return (<Radio value={typeObj.id} key={index}>{typeObj.name}</Radio>);
+                    })
+                  }
                 </RadioGroup>
               </IceFormBinder>
               <IceFormError name="type" />

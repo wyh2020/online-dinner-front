@@ -62,6 +62,14 @@ export default class UserAddForm extends Component {
       if (error) {
         return;
       }
+      // 校验手机号码
+      const reg = /^1(3|4|5|7|8)\d{9}$/;
+      const phone = value.phone;
+      const length = phone.length;
+      if (!(length === 11 && reg.test(phone))) {
+        Feedback.toast.error('请输入正确的手机号码');
+        console.log('phone======', phone);
+      }
       CallApi('/od/user/add', value, 'POST', true).then((res) => {
         if (res.result === 'fail') {
           Feedback.toast.error(res.msg);
@@ -99,6 +107,7 @@ export default class UserAddForm extends Component {
                         <Input
                           size="large"
                           required
+                          maxLength={10}
                           placeholder="请输入姓名"
                           message="用户姓名必须填写"
                           style={{ width: '100%' }}
@@ -116,6 +125,7 @@ export default class UserAddForm extends Component {
                         <Input
                           size="large"
                           required
+                          maxLength={11}
                           placeholder="请输入手机号"
                           message="手机号必须填写"
                           style={{ width: '100%' }}

@@ -27,12 +27,24 @@ export default class GoodListTable extends Component {
       editVisible: false,
       detailVisible: false,
       good: {},
+      goodTypes: [],
     };
   }
 
   componentDidMount() {
     this.queryCache.page = 1;
     this.fetchData();
+    CallApi('/od/class/queryPageList', {}, 'GET', true).then((res) => {
+      if (res.result === 'fail') {
+        // Feedback.toast.error(res.msg);
+      } else {
+        this.setState({
+          goodTypes: res.dataList,
+        });
+      }
+    }).catch((err) => {
+      Feedback.toast.error(err);
+    });
   }
 
   fetchData = () => {
@@ -60,25 +72,13 @@ export default class GoodListTable extends Component {
   }
 
   renderType = (value, index, record) => {
-    const type = record.type;
-    let typeStr = '未知';
-    if (type === 1) {
-      typeStr = '鲁菜';
-    } else if (type === 2) {
-      typeStr = '川菜';
-    } else if (type === 3) {
-      typeStr = '粤菜';
-    } else if (type === 4) {
-      typeStr = '闽菜';
-    } else if (type === 5) {
-      typeStr = '苏菜';
-    } else if (type === 6) {
-      typeStr = '浙菜';
-    } else if (type === 7) {
-      typeStr = '湘菜';
-    } else if (type === 8) {
-      typeStr = '徽菜';
-    }
+    const goodTypes = this.state.goodTypes;
+    let typeStr;
+    goodTypes.map((obj) => {
+      if (obj.id === record.type) {
+        typeStr = obj.name;
+      }
+    });
     return (
       <div style={styles.titleWrapper}>
         <span style={styles.title}>{typeStr}</span>
@@ -219,6 +219,12 @@ export default class GoodListTable extends Component {
             hasBorder={false}
           >
             <Table.Column
+              title="序号"
+              cell={(value, index) => { return index + 1; }}
+              lock="left"
+              width={50}
+            />
+            <Table.Column
               title="菜名"
               dataIndex="name"
               lock="left"
@@ -231,15 +237,9 @@ export default class GoodListTable extends Component {
               width={185}
             />
             <Table.Column
-              title="菜系"
+              title="所属类别"
               cell={this.renderType}
               width={200}
-            />
-            <Table.Column
-              title="创建时间"
-              dataIndex="createtime"
-              cell={this.renderCreatetime}
-              width={150}
             />
             <Table.Column
               title="操作"

@@ -40,7 +40,7 @@ export default class HeaderAsideFooterResponsiveLayout extends Component {
     const userInfo = this.state.userInfo;
     let customAsideNavs = [
       {
-        text: 'Dashboard',
+        text: '首页',
         to: '/',
         icon: 'home2',
       },
@@ -75,21 +75,6 @@ export default class HeaderAsideFooterResponsiveLayout extends Component {
         ],
       },
       {
-        text: '菜品管理',
-        to: '/good/list',
-        icon: 'directory',
-        children: [
-          {
-            text: '菜品列表',
-            to: '/good/list',
-          },
-          {
-            text: '新增菜品',
-            to: '/good/add',
-          },
-        ],
-      },
-      {
         text: '订单管理',
         to: '/trade/list',
         icon: 'cascades',
@@ -105,7 +90,7 @@ export default class HeaderAsideFooterResponsiveLayout extends Component {
     if (userInfo.type === 1) {
       customAsideNavs = [
         {
-          text: 'Dashboard',
+          text: '首页',
           to: '/',
           icon: 'home2',
         },
@@ -140,28 +125,17 @@ export default class HeaderAsideFooterResponsiveLayout extends Component {
           ],
         },
         {
-          text: '菜品管理',
-          to: '/good/list',
+          text: '分类管理',
+          to: '/class/list',
           icon: 'directory',
           children: [
             {
-              text: '菜品列表',
-              to: '/good/list',
+              text: '分类列表',
+              to: '/class/list',
             },
             {
-              text: '新增菜品',
-              to: '/good/add',
-            },
-          ],
-        },
-        {
-          text: '订单管理',
-          to: '/trade/list',
-          icon: 'cascades',
-          children: [
-            {
-              text: '订单列表',
-              to: '/trade/list',
+              text: '新增分类',
+              to: '/class/add',
             },
           ],
         },
@@ -169,7 +143,7 @@ export default class HeaderAsideFooterResponsiveLayout extends Component {
     } else if (userInfo.type === 2) {
       customAsideNavs = [
         {
-          text: 'Dashboard',
+          text: '首页',
           to: '/',
           icon: 'home2',
         },
@@ -203,7 +177,7 @@ export default class HeaderAsideFooterResponsiveLayout extends Component {
     } else if (userInfo.type === 3) {
       customAsideNavs = [
         {
-          text: 'Dashboard',
+          text: '首页',
           to: '/',
           icon: 'home2',
         },

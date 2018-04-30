@@ -18,4 +18,14 @@ Constant.goodImgs = [
   '/public/images/goods/4.jpg',
 ];
 
+
+// 店铺用到的图片地址
+Constant.shopImgs = [
+  '/public/images/shop/01.jpg',
+  '/public/images/shop/02.jpg',
+  '/public/images/shop/03.jpg',
+  '/public/images/shop/04.jpg',
+  '/public/images/shop/05.jpg',
+];
+
 export default Constant;

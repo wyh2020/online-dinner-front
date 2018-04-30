@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
 import IceContainer from '@icedesign/container';
 import { Button, Grid, Feedback } from '@icedesign/base';
 import Img from '@icedesign/img';
@@ -138,6 +137,7 @@ const styles = {
   },
   cardDescWrapper: {
     marginTop: '20px',
+    textAlign: 'center',
   },
   cardTitle: {
     fontSize: '18px',

@@ -18,7 +18,7 @@ const customHeaderNavs = [
 ];
 let customAsideNavs = [
   {
-    text: 'Dashboard',
+    text: '首页',
     to: '/',
     icon: 'home2',
   },
@@ -83,7 +83,7 @@ let customAsideNavs = [
 if (userInfo.type === 1) {
   customAsideNavs = [
     {
-      text: 'Dashboard',
+      text: '首页',
       to: '/',
       icon: 'home2',
     },
@@ -96,10 +96,6 @@ if (userInfo.type === 1) {
           text: '店铺列表',
           to: '/shop/list',
         },
-        {
-          text: '新增店铺',
-          to: '/shop/add',
-        },
       ],
     },
     {
@@ -110,21 +106,6 @@ if (userInfo.type === 1) {
         {
           text: '用户列表',
           to: '/user/list',
-        },
-        {
-          text: '新增用户',
-          to: '/user/add',
-        },
-      ],
-    },
-    {
-      text: '菜品管理',
-      to: '/good/list',
-      icon: 'directory',
-      children: [
-        {
-          text: '菜品列表',
-          to: '/good/list',
         },
       ],
     },
@@ -143,7 +124,7 @@ if (userInfo.type === 1) {
 } else if (userInfo.type === 2) {
   customAsideNavs = [
     {
-      text: 'Dashboard',
+      text: '首页',
       to: '/',
       icon: 'home2',
     },
@@ -177,7 +158,7 @@ if (userInfo.type === 1) {
 } else if (userInfo.type === 3) {
   customAsideNavs = [
     {
-      text: 'Dashboard',
+      text: '首页',
       to: '/',
       icon: 'home2',
     },
