@@ -6,6 +6,7 @@ import SearchBar from './components/SearchBar';
 import EditGood from './components/EditGood';
 import DetailGood from './components/DetailGood';
 import CallApi from '../../util/Api';
+import DeleteBalloon from './components/DeleteBalloon';
 
 export default class GoodListTable extends Component {
   static displayName = 'GoodListTable';
@@ -150,9 +151,30 @@ export default class GoodListTable extends Component {
         >
           详情
         </a>
+        <DeleteBalloon
+          handleRemove={() => { console.log('111111111111111111'); this.updateGood(record, 9); }}
+        />
       </div>
     );
   };
+
+  /**
+   * 更新店铺状态
+   * @param shop
+   */
+  updateGood = (good) => {
+    console.log(122222222222);
+    CallApi('/od/good/delete', { goodid: good.goodid }, 'POST', true).then((res) => {
+      if (res.result === 'fail') {
+        Feedback.toast.error(res.msg);
+      } else {
+        Feedback.toast.success('删除成功!');
+        this.fetchData();
+      }
+    }).catch((err) => {
+      Feedback.toast.error(err);
+    });
+  }
 
   changePage = (currentPage) => {
     this.queryCache.page = currentPage;
